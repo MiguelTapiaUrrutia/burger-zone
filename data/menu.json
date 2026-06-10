@@ -95,6 +95,14 @@
       "precio": 2790,
       "categoria": "bebidas",
       "disponible": true
+    },
+    {
+      "id": 13,
+      "nombre": "Helado de Vainilla",
+      "descripcion": "Helado cremoso de vainilla, ideal para acompañar tu hamburguesa.",
+      "precio": 2490,
+      "categoria": "bebidas",
+      "disponible": true
     }
   ]
 }

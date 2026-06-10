@@ -1,6 +1,13 @@
 const RUTA_MENU = 'data/menu.json';
+const CATEGORIA_TODAS = 'todas';
 
 const contenedorCarta = document.querySelector('#contenedor-carta');
+const contenedorFiltros = document.querySelector('#filtros');
+
+// Estado del módulo: los productos se cargan una sola vez y los filtros
+// operan sobre esta copia en memoria, sin volver a la red.
+let productosCargados = [];
+let categoriaActiva = CATEGORIA_TODAS;
 
 const formateadorCLP = new Intl.NumberFormat('es-CL', {
   style: 'currency',
@@ -12,6 +19,12 @@ function formatearPrecio(precio) {
 }
 
 function renderizarCarta(productos) {
+  if (productos.length === 0) {
+    contenedorCarta.innerHTML =
+      '<p class="mensaje-vacio">Por ahora no tenemos productos en esta categoría. ¡Vuelve pronto!</p>';
+    return;
+  }
+
   const tarjetas = productos
     .map((producto) => {
       const claseAgotado = producto.disponible ? '' : ' agotado';
@@ -36,6 +49,52 @@ function renderizarCarta(productos) {
   contenedorCarta.innerHTML = tarjetas;
 }
 
+function renderizarFiltros(productos) {
+  const categoriasUnicas = [...new Set(productos.map((p) => p.categoria))];
+  const categorias = [CATEGORIA_TODAS, ...categoriasUnicas];
+
+  contenedorFiltros.innerHTML = categorias
+    .map(
+      (categoria) => `
+        <button type="button" class="filtro" data-categoria="${categoria}">
+          ${categoria}
+        </button>
+      `
+    )
+    .join('');
+
+  actualizarBotones();
+}
+
+function actualizarBotones() {
+  const botones = contenedorFiltros.querySelectorAll('button');
+
+  botones.forEach((boton) => {
+    const esActivo = boton.dataset.categoria === categoriaActiva;
+    boton.classList.toggle('activo', esActivo);
+    boton.setAttribute('aria-pressed', String(esActivo));
+  });
+}
+
+function filtrarProductos() {
+  if (categoriaActiva === CATEGORIA_TODAS) {
+    return productosCargados;
+  }
+  return productosCargados.filter((p) => p.categoria === categoriaActiva);
+}
+
+contenedorFiltros.addEventListener('click', (event) => {
+  const boton = event.target.closest('button');
+
+  if (!boton) {
+    return; // el clic cayó en el contenedor, no en un botón
+  }
+
+  categoriaActiva = boton.dataset.categoria;
+  actualizarBotones();
+  renderizarCarta(filtrarProductos());
+});
+
 async function cargarMenu() {
   try {
     const respuesta = await fetch(RUTA_MENU);
@@ -45,7 +104,10 @@ async function cargarMenu() {
     }
 
     const datos = await respuesta.json();
-    renderizarCarta(datos.productos);
+    productosCargados = datos.productos;
+
+    renderizarFiltros(productosCargados);
+    renderizarCarta(productosCargados);
   } catch (error) {
     console.error('No se pudo cargar el menú:', error);
     contenedorCarta.innerHTML =
