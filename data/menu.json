@@ -1,0 +1,100 @@
+{
+  "productos": [
+    {
+      "id": 1,
+      "nombre": "La Penquista",
+      "descripcion": "Carne a la parrilla, queso derretido, tomate, lechuga y mayo casera en pan amasado.",
+      "precio": 7490,
+      "categoria": "clasicas",
+      "disponible": true
+    },
+    {
+      "id": 2,
+      "nombre": "La Chacarera",
+      "descripcion": "Doble carne con porotos verdes, tomate, ají verde y mayo, como manda la tradición.",
+      "precio": 8290,
+      "categoria": "clasicas",
+      "disponible": true
+    },
+    {
+      "id": 3,
+      "nombre": "La Luminosa",
+      "descripcion": "Hamburguesa con huevo frito, cebolla caramelizada y queso mantecoso que se estira solo.",
+      "precio": 7990,
+      "categoria": "clasicas",
+      "disponible": true
+    },
+    {
+      "id": 4,
+      "nombre": "La Bío Bío Smoke",
+      "descripcion": "Carne ahumada en frío, tocino crocante, cheddar madurado y salsa BBQ de merkén.",
+      "precio": 10990,
+      "categoria": "premium",
+      "disponible": true
+    },
+    {
+      "id": 5,
+      "nombre": "La Salto del Laja",
+      "descripcion": "Triple carne en cascada, triple queso y alioli de ajo confitado en pan brioche.",
+      "precio": 12490,
+      "categoria": "premium",
+      "disponible": false
+    },
+    {
+      "id": 6,
+      "nombre": "La Costanera Trufada",
+      "descripcion": "Carne premium, champiñones salteados, queso azul y un toque de aceite de trufa.",
+      "precio": 11990,
+      "categoria": "premium",
+      "disponible": true
+    },
+    {
+      "id": 7,
+      "nombre": "La Verde Que Te Quiero",
+      "descripcion": "Medallón de lentejas y quinoa, palta cremosa, tomate asado y mayo vegana de cilantro.",
+      "precio": 8490,
+      "categoria": "veganas",
+      "disponible": true
+    },
+    {
+      "id": 8,
+      "nombre": "La Huerto del Carbón",
+      "descripcion": "Hamburguesa de garbanzos al merkén, pebre fresco y cebolla morada encurtida.",
+      "precio": 8290,
+      "categoria": "veganas",
+      "disponible": true
+    },
+    {
+      "id": 9,
+      "nombre": "Papas Rústicas al Merkén",
+      "descripcion": "Papas con cáscara, doradas y espolvoreadas con merkén y sal de mar.",
+      "precio": 3990,
+      "categoria": "acompañamientos",
+      "disponible": true
+    },
+    {
+      "id": 10,
+      "nombre": "Aros de Cebolla Crocantes",
+      "descripcion": "Aros gruesos en panko, fritos hasta el punto justo, con salsa de la casa.",
+      "precio": 4290,
+      "categoria": "acompañamientos",
+      "disponible": false
+    },
+    {
+      "id": 11,
+      "nombre": "Mote con Huesillo Shake",
+      "descripcion": "El clásico de verano hecho batido cremoso, dulce y bien helado.",
+      "precio": 3490,
+      "categoria": "bebidas",
+      "disponible": true
+    },
+    {
+      "id": 12,
+      "nombre": "Limonada de la Vega",
+      "descripcion": "Limonada fresca con menta y jengibre, exprimida al momento.",
+      "precio": 2790,
+      "categoria": "bebidas",
+      "disponible": true
+    }
+  ]
+}
