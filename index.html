@@ -27,11 +27,19 @@
     <section id="carta" aria-labelledby="carta-titulo">
       <h2 id="carta-titulo">Nuestra Carta</h2>
 
+      <div class="busqueda" role="search">
+        <label for="buscador" class="visually-hidden">Buscar en la carta</label>
+        <input type="search" id="buscador" placeholder="Buscar en la carta..." autocomplete="off">
+      </div>
+
       <!-- Botones de categoría generados por JS -->
       <div id="filtros" role="group" aria-label="Filtrar por categoría"></div>
 
+      <!-- Contador de resultados: anuncia los cambios a lectores de pantalla -->
+      <p id="contador-resultados" aria-live="polite"></p>
+
       <!-- Productos renderizados desde data/menu.json -->
-      <div id="contenedor-carta" aria-live="polite"></div>
+      <div id="contenedor-carta"></div>
     </section>
   </main>
 

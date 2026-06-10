@@ -3,11 +3,14 @@ const CATEGORIA_TODAS = 'todas';
 
 const contenedorCarta = document.querySelector('#contenedor-carta');
 const contenedorFiltros = document.querySelector('#filtros');
+const inputBuscador = document.querySelector('#buscador');
+const contadorResultados = document.querySelector('#contador-resultados');
 
-// Estado del módulo: los productos se cargan una sola vez y los filtros
-// operan sobre esta copia en memoria, sin volver a la red.
+// Estado del módulo: los productos se cargan una sola vez y todo lo demás
+// (filtros, búsqueda, contador) se deriva de estas tres variables.
 let productosCargados = [];
 let categoriaActiva = CATEGORIA_TODAS;
+let textoBusqueda = '';
 
 const formateadorCLP = new Intl.NumberFormat('es-CL', {
   style: 'currency',
@@ -18,10 +21,42 @@ function formatearPrecio(precio) {
   return formateadorCLP.format(precio);
 }
 
+// Minúsculas y sin tildes, para comparar "jengibre" con "Jengibre" o "menta" con "Mentá"
+function normalizarTexto(texto) {
+  return texto
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+}
+
+function obtenerProductosVisibles() {
+  const busqueda = normalizarTexto(textoBusqueda.trim());
+
+  return productosCargados
+    .filter(
+      (producto) =>
+        categoriaActiva === CATEGORIA_TODAS ||
+        producto.categoria === categoriaActiva
+    )
+    .filter((producto) => {
+      if (busqueda === '') {
+        return true;
+      }
+      return (
+        normalizarTexto(producto.nombre).includes(busqueda) ||
+        normalizarTexto(producto.descripcion).includes(busqueda)
+      );
+    });
+}
+
 function renderizarCarta(productos) {
   if (productos.length === 0) {
-    contenedorCarta.innerHTML =
-      '<p class="mensaje-vacio">Por ahora no tenemos productos en esta categoría. ¡Vuelve pronto!</p>';
+    contenedorCarta.innerHTML = `
+      <div class="mensaje-vacio">
+        <p>No encontramos nada con esos criterios.</p>
+        <button type="button" id="limpiar-busqueda">Limpiar búsqueda</button>
+      </div>
+    `;
     return;
   }
 
@@ -62,8 +97,6 @@ function renderizarFiltros(productos) {
       `
     )
     .join('');
-
-  actualizarBotones();
 }
 
 function actualizarBotones() {
@@ -76,11 +109,23 @@ function actualizarBotones() {
   });
 }
 
-function filtrarProductos() {
-  if (categoriaActiva === CATEGORIA_TODAS) {
-    return productosCargados;
-  }
-  return productosCargados.filter((p) => p.categoria === categoriaActiva);
+function actualizarContador(visibles) {
+  contadorResultados.textContent = `Mostrando ${visibles} de ${productosCargados.length} productos`;
+}
+
+// Único camino de render: todo cambio de estado termina aquí.
+function render() {
+  const visibles = obtenerProductosVisibles();
+  actualizarBotones();
+  actualizarContador(visibles.length);
+  renderizarCarta(visibles);
+}
+
+function limpiarBusqueda() {
+  categoriaActiva = CATEGORIA_TODAS;
+  textoBusqueda = '';
+  inputBuscador.value = '';
+  render();
 }
 
 contenedorFiltros.addEventListener('click', (event) => {
@@ -91,8 +136,20 @@ contenedorFiltros.addEventListener('click', (event) => {
   }
 
   categoriaActiva = boton.dataset.categoria;
-  actualizarBotones();
-  renderizarCarta(filtrarProductos());
+  render();
+});
+
+inputBuscador.addEventListener('input', () => {
+  textoBusqueda = inputBuscador.value;
+  render();
+});
+
+// Delegación: el botón "Limpiar búsqueda" se crea y destruye con cada render,
+// pero el contenedor es permanente.
+contenedorCarta.addEventListener('click', (event) => {
+  if (event.target.closest('#limpiar-busqueda')) {
+    limpiarBusqueda();
+  }
 });
 
 async function cargarMenu() {
@@ -107,7 +164,7 @@ async function cargarMenu() {
     productosCargados = datos.productos;
 
     renderizarFiltros(productosCargados);
-    renderizarCarta(productosCargados);
+    render();
   } catch (error) {
     console.error('No se pudo cargar el menú:', error);
     contenedorCarta.innerHTML =
